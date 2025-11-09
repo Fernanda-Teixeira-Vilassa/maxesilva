@@ -37,7 +37,7 @@ if (canvas) {
 // === 🌐 Definir a URL da API automaticamente ===
 const API_URL = window.location.hostname.includes("127.0.0.1") || window.location.hostname.includes("localhost")
   ? "http://127.0.0.1:5000"  // backend local
-  : "https://maxesilva-api.onrender.com"; // URL do backend em produção (ajuste depois)
+  : "https://maxesilva-delta.vercel.app"; // URL do backend em produção (ajuste depois)
 
 // === 📤 Envio de arquivos (index.html) ===
 const form = document.getElementById("uploadForm");
