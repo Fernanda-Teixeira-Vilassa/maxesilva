@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Casamento Max & Silva 💚</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <canvas id="petalas"></canvas>
+
+  <header>
+    <div class="header-img">
+      <img src="imagens/flowers2.png" alt="Decoração do Casamento" />
+    </div>
+    <h1>Casamento Max & Silva</h1>
+    <p>Compartilhe seus momentos especiais conosco</p>
+  </header>
+
+  <main class="container">
+    <h2>Envie suas fotos e vídeos</h2> 
+    <p>Selecione arquivos para upload (máx. 30 segundos para vídeos):</p>
+
+    <form id="uploadForm">
+      <label for="nome">Seu Nome</label>
+      <input type="text" id="nome" name="nome" placeholder="Digite seu nome" />
+
+      <label for="midia">Selecione fotos ou vídeos</label>
+      <input type="file" id="midia" name="midia" accept="image/*,video/*" multiple required />
+
+      <p>Deixe uma mensagem aos noivos</p>
+      <textarea id="guestMessage" placeholder="Sua mensagem..."></textarea>
+
+      <button type="submit">Enviar Arquivos</button>
+    </form>
+
+    <section id="galeria">
+      <h2>Álbum Compartilhado</h2>
+      <div id="album"></div>
+
+      <!-- Botão para o álbum completo -->
+      <a href="album.html" target="_blank" id="verAlbum">📸 Ver Álbum Completo</a>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-img">
+      <img src="imagens/flowers4.png" alt="Decoração Rodapé" />
+    </div>
+    <p>Com carinho, <strong>Max & Silva</strong></p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
