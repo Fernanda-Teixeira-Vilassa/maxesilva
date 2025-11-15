@@ -1,5 +1,5 @@
 // ===============================================
-// ENVIO DE ARQUIVOS
+// ENVIO OPCIONAL DE NOME / MENSAGEM / ARQUIVOS
 // ===============================================
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -9,14 +9,9 @@ document.addEventListener("DOMContentLoaded", () => {
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const nome = document.getElementById("nome").value || "Convidado";
+      const nome = document.getElementById("nome").value || "";
       const mensagem = document.getElementById("guestMessage").value || "";
       const midias = document.getElementById("midia").files;
-
-      if (!midias.length) {
-        alert("Selecione pelo menos 1 arquivo!");
-        return;
-      }
 
       form.querySelector("button").innerText = "Enviando...";
       form.querySelector("button").disabled = true;
@@ -35,47 +30,39 @@ document.addEventListener("DOMContentLoaded", () => {
           body: formData
         });
 
-        if (!res.ok) {
-          const txt = await res.text();
-          console.error("Erro da API:", txt);
-          alert("Erro ao enviar os arquivos.");
+        const data = await res.json();
+
+        if (!res.ok || !data.success) {
+          alert("Erro ao enviar.");
           return;
         }
 
-        const data = await res.json();
-
-        if (data.urls) {
-          alert("✨ Upload enviado com sucesso!");
-          location.reload();
-        } else {
-          alert("Erro inesperado ao enviar mídia.");
-        }
+        alert("✨ Envio realizado com sucesso!");
+        location.reload();
 
       } catch (err) {
         console.error(err);
-        alert("Erro de conexão com o servidor.");
+        alert("Erro de conexão.");
       }
 
-      form.querySelector("button").innerText = "Enviar Arquivos";
+      form.querySelector("button").innerText = "Enviar";
       form.querySelector("button").disabled = false;
     });
   }
 
-  // IDENTIFICA SE O ÁLBUM DEVE SER CARREGADO OU NÃO
   const album = document.getElementById("album");
   if (album && !album.dataset.hide) {
-    carregarAlbum(); // só carrega se NÃO tiver data-hide="true"
+    carregarAlbum();
   }
 });
 
 // ===============================================
-// FUNÇÃO PARA CARREGAR FOTOS E VÍDEOS
+// CARREGAR ÁLBUM (MÍDIA + TEXTO)
 // ===============================================
 
 async function carregarAlbum() {
   const album = document.getElementById("album");
-
-  album.innerHTML = "<p>Carregando fotos...</p>";
+  album.innerHTML = "<p>Carregando...</p>";
 
   try {
     const res = await fetch("/api/list");
@@ -85,31 +72,44 @@ async function carregarAlbum() {
       return;
     }
 
-    const fotos = await res.json();
+    const itens = await res.json();
 
     album.innerHTML = "";
 
-    if (!fotos.length) {
-      album.innerHTML = "<p>Nenhuma foto enviada ainda.</p>";
+    if (!itens.length) {
+      album.innerHTML = "<p>Nenhum envio registrado ainda.</p>";
       return;
     }
 
-    fotos.forEach((item) => {
-      if (item.tipo === "video") {
-        album.innerHTML += `
-          <video src="${item.url}" controls 
-          style="border-radius: 12px; width: 100%; height: 200px; object-fit: cover;"></video>
-        `;
-      } else {
-        album.innerHTML += `
-          <img src="${item.url}" alt="Foto enviada"
-          style="border-radius: 12px; width: 100%; height: 200px; object-fit: cover;" />
-        `;
-      }
+    itens.forEach((item) => {
+      album.innerHTML += `
+        <div style="
+          background: #ffffffd9;
+          border-radius: 12px;
+          padding: 12px;
+          margin-bottom: 15px;
+          box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+        ">
+
+          ${item.nome ? `<p style="font-weight: bold; margin-bottom: 5px;">📌 ${item.nome}</p>` : ""}
+
+          ${item.mensagem ? `<p style="margin-bottom: 10px;">💬 ${item.mensagem}</p>` : ""}
+
+          ${
+            item.url
+              ? (
+                  item.tipo === "video"
+                    ? `<video src="${item.url}" controls style="width: 100%; border-radius: 12px; height: 200px; object-fit: cover;"></video>`
+                    : `<img src="${item.url}" style="width: 100%; border-radius: 12px; height: 200px; object-fit: cover;" />`
+                )
+              : `<p style="opacity: 0.6; font-style: italic;">(Sem mídia enviada)</p>`
+          }
+        </div>
+      `;
     });
 
   } catch (err) {
     console.error("Erro ao carregar álbum:", err);
-    album.innerHTML = "<p>Erro ao carregar álbum.</p>";
+    album.innerHTML = "<p>Erro ao carregar o álbum.</p>";
   }
 }

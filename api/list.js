@@ -8,10 +8,8 @@ export default async function handler(req, res) {
 
     await connectDB();
 
-    // Buscar todas as fotos, mais novas primeiro
     const fotos = await FotoModel.find().sort({ createdAt: -1 });
 
-    // Evitar cache da Vercel (carregar sempre o álbum atualizado)
     res.setHeader("Cache-Control", "no-store");
 
     return res.status(200).json(fotos);
