@@ -1,4 +1,81 @@
 // ===============================================
+// PÉTALAS CAINDO (CANVAS ANIMADO)
+// ===============================================
+
+document.addEventListener("DOMContentLoaded", () => {
+  const canvas = document.getElementById("petalas");
+  if (!canvas) return;
+
+  const ctx = canvas.getContext("2d");
+  let width = (canvas.width = window.innerWidth);
+  let height = (canvas.height = window.innerHeight);
+
+  const petalas = [];
+  const total = 25; // quantidade de pétalas (pode aumentar)
+
+  const img = new Image();
+  img.src = "imagens/petala.png"; 
+  // 👉 Se quiser usar emoji ao invés de imagem, posso adaptar
+
+  // Criar pétalas
+  for (let i = 0; i < total; i++) {
+    petalas.push({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      r: 20 + Math.random() * 15, // tamanho da pétala
+      d: Math.random() + 1,       // densidade
+      tilt: Math.random() * 10 - 10
+    });
+  }
+
+  function desenhar() {
+    ctx.clearRect(0, 0, width, height);
+
+    petalas.forEach((p) => {
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.tilt * Math.PI / 180);
+
+      // se imagem não carregou ainda, não tenta desenhar
+      if (img.complete) {
+        ctx.drawImage(img, -p.r / 2, -p.r / 2, p.r, p.r);
+      }
+
+      ctx.restore();
+    });
+
+    atualizar();
+
+    requestAnimationFrame(desenhar);
+  }
+
+  let angulo = 0;
+
+  function atualizar() {
+    angulo += 0.01;
+
+    petalas.forEach((p) => {
+      p.y += Math.cos(angulo + p.d) + 1 + p.r / 20;
+      p.x += Math.sin(angulo) * 0.5;
+
+      // reaparece no topo quando sair da tela
+      if (p.y > height + 20) {
+        p.y = -20;
+        p.x = Math.random() * width;
+      }
+    });
+  }
+
+  // Redimensiona quando a janela muda
+  window.addEventListener("resize", () => {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+  });
+
+  desenhar();
+});
+
+// ===============================================
 // ENVIO OPCIONAL DE NOME / MENSAGEM / ARQUIVOS
 // ===============================================
 
